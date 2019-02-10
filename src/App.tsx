@@ -1,28 +1,46 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState, useContext } from "react";
+import "./App.css";
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.tsx</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
-}
+import { useJupyter, useKernelspecs, useSessions } from "./hooks";
+
+const SessionView = () => {
+  const sessions = useSessions();
+
+  return (
+    <div>
+      <h2>sessions</h2>
+      {sessions.map(session => {
+        return (
+          <div key={session.id}>
+            {session.path} - {session.kernel!.last_activity}
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+const KernelSpecView = () => {
+  const ks = useKernelspecs();
+  return (
+    <div>
+      <h2>kernelspecs</h2>
+      <pre>{JSON.stringify(ks)}</pre>
+    </div>
+  );
+};
+
+const App = () => {
+  const jupyterConfig = useJupyter();
+
+  return (
+    <div className="App">
+      <h2>Jupyter Config</h2>
+      <pre>{JSON.stringify(jupyterConfig)}</pre>
+      <KernelSpecView />
+      <SessionView />
+    </div>
+  );
+};
 
 export default App;
